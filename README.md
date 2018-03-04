@@ -101,7 +101,7 @@ To find position of the vehicle with respect to the center, I just found the dif
 
 #### 6. Provide an example image of your result plotted back down onto the road such that the lane area is identified clearly.
 
-To see example of windows you can check out pipeline image above.
+To see example of windows you can check out pipeline image above. Open it in new window or tab to see it better.
 
 ---
 
@@ -111,7 +111,7 @@ To see example of windows you can check out pipeline image above.
 
 Here's a [link to my video result](./result_project_video.mp4)
 
-Here is a link to challenge project video ![alt text][video22]
+Here is a link to challenge project video ![alt text][video2]
 
 ---
 
@@ -119,5 +119,5 @@ Here is a link to challenge project video ![alt text][video22]
 
 #### 1. Briefly discuss any problems / issues you faced in your implementation of this project.  Where will your pipeline likely fail?  What could you do to make it more robust?
 
-I faced some problems when trying to adapt my first solution to challenge videos. I was able successfuly build the mask which work good on both project and challenge video. To work on harder challenge video I do not have much time left, so I decided to leave it as it is, but you can check out how my pipeline works on that too [here](./result_harder_challenge_video.mp4).
+I faced some problems when trying to adapt my first solution to challenge videos. I was able successfuly build the mask which work good on both project and challenge video. To work on harder challenge video I do not have much time left, so I decided to leave it as it is, but you can check out how my pipeline works on that too [here](./result_harder_challenge_video.mp4). For example, to track curves with higher angles better we will probably need different algorithm, for example, which will start processing window not on histogram peak but on some high value and then pass the highest value and end on some similar hight value on the other side of its peak.
 Different conditions require more sophisticated analisys and techniques. I can imgine that some machine learning techniques could help to predict lane lines position on difficult conditions. This could be great advantage to use some highly accurate predictions for this task.
