@@ -109,9 +109,9 @@ To see example of windows you can check out pipeline image above. Open it in new
 
 #### 1. Provide a link to your final video output.  Your pipeline should perform reasonably well on the entire project video (wobbly lines are ok but no catastrophic failures that would cause the car to drive off the road!).
 
-Here's a [link to my video result](./result_project_video.mp4)
+Here's a [link to my video result][video1]
 
-Here is a link to challenge project video ![alt text][video2]
+Here is a [link to challenge video result][video2]
 
 ---
 
