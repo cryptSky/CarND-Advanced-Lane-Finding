@@ -84,8 +84,8 @@ class AdvancedLaneRecognizer:
     left_line = None
     right_line = None
     
-    ym_per_pix = 25/720 # meters per pixel in y dimension
-    xm_per_pix = 3.7/1000 # meters per pixel in x dimension
+    ym_per_pix = 20/720 # meters per pixel in y dimension
+    xm_per_pix = 3.7/900 # meters per pixel in x dimension
     
     def __init__(self, n):
     
@@ -424,7 +424,7 @@ class AdvancedLaneRecognizer:
         
         center = midpoint
         lane_center = self.left_line.bestx[binary_warped.shape[0]-1] + (self.right_line.bestx[binary_warped.shape[0]-1] - self.left_line.bestx[binary_warped.shape[0]-1]) // 2        
-        center_diff = lane_center - center
+        center_diff = center - lane_center
         self.line_base_pos = center_diff*self.xm_per_pix
                 
         check = self.sanity_check()
@@ -526,13 +526,13 @@ class AdvancedLaneRecognizer:
        
         
     def process_video(self):
-        white_output = 'result_harder_challenge_video.mp4'
+        white_output = 'result_project_video.mp4'
         ## To speed up the testing process you may want to try your pipeline on a shorter subclip of the video
         ## To do so add .subclip(start_second,end_second) to the end of the line below
         ## Where start_second and end_second are integer values representing the start and end of the subclip
         ## You may also uncomment the following line for a subclip of the first 5 seconds
         ##clip1 = VideoFileClip("test_videos/solidWhiteRight.mp4").subclip(0,5)
-        clip1 = VideoFileClip("harder_challenge_video.mp4")
+        clip1 = VideoFileClip("project_video.mp4")
         white_clip = clip1.fl_image(self.process_frame) #NOTE: this function expects color images!!
         white_clip.write_videofile(white_output, audio=False)
         white_clip.reader.close()

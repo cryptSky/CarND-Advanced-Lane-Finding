@@ -92,8 +92,8 @@ To see example of windows you can check out pipeline image above.
 I used approximate scale from pixels to meters to find scaled to meters version of the lane curve and used formula to calculate radius of the curve(here is the tutorial https://www.intmath.com/applications-differentiation/8-radius-curvature.php)
 Here are those scaling parameters:
 ```python
-    ym_per_pix = 25/720 # meters per pixel in y dimension
-    xm_per_pix = 3.7/1000 # meters per pixel in x dimension
+    ym_per_pix = 20/720 # meters per pixel in y dimension
+    xm_per_pix = 3.7/900 # meters per pixel in x dimension
 ```
 You can chech the implementation in the function ```calculate_curvature``` (lines  452-473 from [project.py](project.py))
 
