@@ -84,8 +84,8 @@ class AdvancedLaneRecognizer:
     left_line = None
     right_line = None
     
-    ym_per_pix = 30/720 # meters per pixel in y dimension
-    xm_per_pix = 3.7/700 # meters per pixel in x dimension
+    ym_per_pix = 25/720 # meters per pixel in y dimension
+    xm_per_pix = 3.7/1000 # meters per pixel in x dimension
     
     def __init__(self, n):
     
@@ -118,6 +118,8 @@ class AdvancedLaneRecognizer:
                 #img = cv2.drawChessboardCorners(img, (self.nx, self.ny), corners, ret)
                 #plt.imshow(img)
                 #plt.show()
+                
+        ret, self.mtx, self.dist, rvecs, tvecs = cv2.calibrateCamera(self.object_points, self.image_points, gray.shape[::-1], None, None)
 
                 
     # Function that takes an image, object points, and image points
@@ -126,10 +128,9 @@ class AdvancedLaneRecognizer:
     def undistort(self, img):
         # Use cv2.calibrateCamera() and cv2.undistort()
         gray = cv2.cvtColor(img,cv2.COLOR_BGR2GRAY)
-        ret, mtx, dist, rvecs, tvecs = cv2.calibrateCamera(self.object_points, self.image_points, gray.shape[::-1], None, None)
-        
+                
         # undistort
-        undist = cv2.undistort(img, mtx, dist, None, mtx)
+        undist = cv2.undistort(img, self.mtx, self.dist, None, self.mtx)
         
         return undist
         
@@ -147,7 +148,6 @@ class AdvancedLaneRecognizer:
     def perspectiveTransform(self, undist):
 
         img_size = (undist.shape[1], undist.shape[0])
-        print(img_size)
     
         # Search for corners in the grayscaled image
         corners_before = np.float32([(224, 719),(533,494),(755,494),(1086,719)]) 
@@ -423,7 +423,7 @@ class AdvancedLaneRecognizer:
         self.calculate_curvature(left_fitx, right_fitx, ploty)
         
         center = midpoint
-        lane_center = (self.right_line.bestx[binary_warped.shape[0]-1] - self.left_line.bestx[binary_warped.shape[0]-1]) // 2        
+        lane_center = self.left_line.bestx[binary_warped.shape[0]-1] + (self.right_line.bestx[binary_warped.shape[0]-1] - self.left_line.bestx[binary_warped.shape[0]-1]) // 2        
         center_diff = lane_center - center
         self.line_base_pos = center_diff*self.xm_per_pix
                 
@@ -438,10 +438,12 @@ class AdvancedLaneRecognizer:
         #out_img[nonzeroy[right_lane_inds], nonzerox[right_lane_inds]] = [0, 0, 255]
         #out_img = out_img/255
         #axes = f.get_axes()
+        #axes[4].set_title('Lane Finding')
         #axes[4].imshow(out_img)
         #axes[4].plot(histogram)
         #axes[4].plot(left_fitx, ploty, color='yellow')
         #axes[4].plot(right_fitx, ploty, color='yellow')
+        #axes[5].set_title('Final Image Frame')
         #plt.xlim(0, 1280)
         #plt.ylim(720, 0)
         #plt.show()
@@ -493,7 +495,7 @@ class AdvancedLaneRecognizer:
         cv2.putText(result,"Radius of curvature = {}(m)".format(self.radius_of_curvature),(10,70), font, 2,(255,255,255),2,cv2.LINE_AA)
         if self.line_base_pos < 0:
             cv2.putText(result,"Vehicle is {:1.2f}m left of center".format(np.abs(self.line_base_pos)),(10,150), font, 2,(255,255,255),2,cv2.LINE_AA)
-        elif self.linae_base_pos > 0:
+        elif self.line_base_pos > 0:
             cv2.putText(result,"Vehicle is {:1.2f}m right of center".format(np.abs(self.line_base_pos)),(10,150), font, 2,(255,255,255),2,cv2.LINE_AA)
         else:
             cv2.putText(result,'Vehicle is on the center of the lane',(10,150), font, 2,(255,255,255),2,cv2.LINE_AA)
@@ -507,7 +509,6 @@ class AdvancedLaneRecognizer:
      
         pTransformed, M = self.perspectiveTransform(undist)
         
-                ## Plotting thresholded images
         #f, (ax1, ax2) = plt.subplots(1, 2, figsize=(20,10))
         #ax1.set_title('Undistorted')
         #ax1.imshow(undist)
@@ -518,7 +519,6 @@ class AdvancedLaneRecognizer:
         thresholded, f = cdmg_threshold(pTransformed)
 
         ploty, left_fitx, right_fitx = self.find_lane_lines(thresholded, f)
-
         Minv = np.linalg.inv(M)        
         result = self.draw(undist, thresholded, left_fitx, right_fitx, ploty, Minv)        
         return result

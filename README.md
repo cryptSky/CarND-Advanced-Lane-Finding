@@ -25,8 +25,8 @@ The goals / steps of this project are the following:
 ### Here I will consider the rubric points individually and describe how I addressed each point in my implementation.  
 
 ---
-#### I have two files in my solution: threshold.py and project.py. First one is used for thresholding input image based on different parameters like color, gradient magnitude, gradient direction.
-#### In project.py file you can find  ```AdvancedLaneRecognizer ``` class, which does all the job of finding lane lines and creating final videos. Also there is ```Line ``` class for tracking lane line data.
+#### I have two files in my solution: [threshold.py](threshold.py) and [project.py](project.py). First one is used for thresholding input image based on different parameters like color, gradient magnitude, gradient direction.
+#### In [project.py](project.py) file you can find  ```AdvancedLaneRecognizer ``` class, which does all the job of finding lane lines and creating final videos. Also there is ```Line ``` class for tracking lane line data.
 
 ### Camera Calibration
 
@@ -47,9 +47,9 @@ To demonstrate this step, I will describe how I apply the distortion correction 
 
 #### 2. Describe how (and identify where in your code) you used color transforms, gradients or other methods to create a thresholded binary image.  Provide an example of a binary image result.
 
-I used a combination of color and gradient thresholds to generate a binary image, here I use functions from threshold.py file. Main function where everything happens is  `cdmg_threshold`.
+I used a combination of color and gradient thresholds to generate a binary image, here I use functions from [threshold.py](threshold.py) file. Main function where everything happens is  `cdmg_threshold`.
 
- After some time of figuring out what combination of color and gradient thresholds will work good most of the time, I decided to use several approaches. As the first component I used combination of color gradient from HLS color space and x gradient direction. I've figured out that as lane lines are in most cases yellow and white, their upper and lower bounds in the HLS color space are the following: white - from[  0, 185,   0] to [255, 255, 255] and yellow - from [ 0,   0, 40] to [255, 255, 255]. This mask is then merged with thresholded x direction gradient. You can find this functionality inside  `color_gradient_threshold ` function. Then I compute gradient magnitude threshold and gradient directions threshold in `mag_thresh` and `dir_thresh` functions. Finally, in `cdmg_threshold` I combine these 3 masks into one by using weighted sum of those, you can see it on line 151 of threshold.py. Because color is the most important here it has weight of 2, magnitude and direction have weight of 1. Later, when I search for the lines, inside `find_lane_lines` method from ```AdvancedLaneRecognizer ``` class. in project.py file, I mask resulting weights by thresholding them by 1.2: everything greater than 1.2 becomes one, evrything lower than 1.2 becomes zero (lines 233, 234 from project.py file).
+ After some time of figuring out what combination of color and gradient thresholds will work good most of the time, I decided to use several approaches. As the first component I used combination of color gradient from HLS color space and x gradient direction. I've figured out that as lane lines are in most cases yellow and white, their upper and lower bounds in the HLS color space are the following: white - from[  0, 185,   0] to [255, 255, 255] and yellow - from [ 0,   0, 40] to [255, 255, 255]. This mask is then merged with thresholded x direction gradient. You can find this functionality inside  `color_gradient_threshold ` function. Then I compute gradient magnitude threshold and gradient directions threshold in `mag_thresh` and `dir_thresh` functions. Finally, in `cdmg_threshold` I combine these 3 masks into one by using weighted sum of those, you can see it on line 151 of [threshold.py](threshold.py). Because color is the most important here it has weight of 2, magnitude and direction have weight of 1. Later, when I search for the lines, inside `find_lane_lines` method from ```AdvancedLaneRecognizer ``` class. In [project.py](project.py) file, I mask resulting weights by thresholding them by 1.2: everything greater than 1.2 becomes one, evrything lower than 1.2 becomes zero (lines 233, 234 from [project.py](project.py) file).
  
 Here's an pipeline example of my output for this step. 
 
@@ -57,7 +57,7 @@ Here's an pipeline example of my output for this step.
 
 #### 3. Describe how (and identify where in your code) you performed a perspective transform and provide an example of a transformed image.
 
-The code for my perspective transform includes a function called `perspectiveTransform`, which appears in lines 149 through 164 in the file project.py.  The `perspectiveTransform` function takes undistorted image as input.   I chose the hardcode the source and destination points in the following manner:
+The code for my perspective transform includes a function called `perspectiveTransform`, which appears in lines 149 through 164 in the file [project.py](project.py).  The `perspectiveTransform` function takes undistorted image as input.   I chose the hardcode the source and destination points in the following manner:
 
 ```python
 corners_before = np.float32([(224, 719),(533,494),(755,494),(1086,719)]) 
@@ -92,12 +92,12 @@ To see example of windows you can check out pipeline image above.
 I used approximate scale from pixels to meters to find scaled to meters version of the lane curve and used formula to calculate radius of the curve(here is the tutorial https://www.intmath.com/applications-differentiation/8-radius-curvature.php)
 Here are those scaling parameters:
 ```python
-    ym_per_pix = 30/720 # meters per pixel in y dimension
-    xm_per_pix = 3.7/700 # meters per pixel in x dimension
+    ym_per_pix = 25/720 # meters per pixel in y dimension
+    xm_per_pix = 3.7/1000 # meters per pixel in x dimension
 ```
-You can chech the implementation in the function ```calculate_curvature``` (lines  452-473 from project.py)
+You can chech the implementation in the function ```calculate_curvature``` (lines  452-473 from [project.py](project.py))
 
-To find position of the vehicle with respect to the center, I just found the difference between center of the image and the middle point between found lane lines (lines  425-428 from project.py)
+To find position of the vehicle with respect to the center, I just found the difference between center of the image and the middle point between found lane lines (lines  425-428 from [project.py](project.py))
 
 #### 6. Provide an example image of your result plotted back down onto the road such that the lane area is identified clearly.
 
